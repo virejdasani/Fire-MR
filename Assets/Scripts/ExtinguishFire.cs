@@ -10,8 +10,8 @@ public class ExtinguishFire : MonoBehaviour
     public ParticleSystem fireParticles;
     public int timeToExtinguish = 500;
     public AudioSource fireExtinguishingAudio;
-
     ParticleSystem currentWaterParticles;
+    bool soundIsPlaying;
 
     // Start is called before the first frame update
     void Start()
@@ -24,6 +24,8 @@ public class ExtinguishFire : MonoBehaviour
           currentWaterParticles = controllerWaterParticles;
           handWaterParticles.Stop();
       }
+
+      soundIsPlaying = false;
     }
 
     // Update is called once per frame
@@ -39,20 +41,36 @@ public class ExtinguishFire : MonoBehaviour
         } else {
             // if waterParticles is not null and the right trigger is pressed, play the water particles
             if (OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger) > 0.5f) {
+                if (!soundIsPlaying)
+                {
+                    fireExtinguishingAudio.Play();
+                    soundIsPlaying = true;
+                }
+
                 currentWaterParticles.Play();
-            } else {
+
+            }
+            else {
+                if (soundIsPlaying)
+                {
+                    fireExtinguishingAudio.Stop();
+                    soundIsPlaying = false;
+                }
+
                 currentWaterParticles.Stop();
+
             }
         }
 
-        // while the trigger is held down, play the sound effect
-        // if (OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger) > 0.5f) {
-        //     Debug.Log("Playing fire extinguisher sound effect");
-        //     fireExtinguishingAudio.Play();
-        // } else {
-        //     Debug.Log("Stopping fire extinguisher sound effect");
-        //     fireExtinguishingAudio.Stop();
-        // }
+        if (Input.GetKeyDown(KeyCode.W))
+        {
+            fireExtinguishingAudio.Play();
+        }
+
+        if (Input.GetKeyUp(KeyCode.W))
+        {
+            fireExtinguishingAudio.Stop();
+        }
 
         // check if the water particles are colliding with the fire particles for more than 3 seconds
         if (controllerWaterParticles && fireParticles) {
