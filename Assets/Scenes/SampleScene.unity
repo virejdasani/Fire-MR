@@ -5322,6 +5322,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: pf_vfx-inf_psys_demo_loop_fire7
       objectReference: {fileID: 0}
+    - target: {fileID: 145004, guid: e872b12bde399194696675011077b552, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 477566, guid: e872b12bde399194696675011077b552, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.666718
@@ -5609,11 +5613,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 188770, guid: 0f57b1f7996229b4cbaaecc2410cf43c, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 452330, guid: 0f57b1f7996229b4cbaaecc2410cf43c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 8.6994095
+      value: -1.6
       objectReference: {fileID: 0}
     - target: {fileID: 452330, guid: 0f57b1f7996229b4cbaaecc2410cf43c, type: 3}
       propertyPath: m_LocalPosition.y
@@ -5621,7 +5625,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 452330, guid: 0f57b1f7996229b4cbaaecc2410cf43c, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -1.1339092
+      value: 2.36
       objectReference: {fileID: 0}
     - target: {fileID: 452330, guid: 0f57b1f7996229b4cbaaecc2410cf43c, type: 3}
       propertyPath: m_LocalRotation.w
@@ -7503,6 +7507,22 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 19832488, guid: 6e6be1738db98334e8ebb5d1efedd460, type: 3}
+      propertyPath: InitialModule.startSizeY.minMaxState
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 19832488, guid: 6e6be1738db98334e8ebb5d1efedd460, type: 3}
+      propertyPath: InitialModule.startSizeZ.minMaxState
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 19832488, guid: 6e6be1738db98334e8ebb5d1efedd460, type: 3}
+      propertyPath: InitialModule.startRotationX.minMaxState
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 19832488, guid: 6e6be1738db98334e8ebb5d1efedd460, type: 3}
+      propertyPath: InitialModule.startRotationY.minMaxState
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 19940978, guid: 6e6be1738db98334e8ebb5d1efedd460, type: 3}
       propertyPath: m_Materials.Array.size
       value: 1
@@ -8391,6 +8411,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1406381043}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!198 &1425542638 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 198634506769759084, guid: 0f57b1f7996229b4cbaaecc2410cf43c, type: 3}
+  m_PrefabInstance: {fileID: 886661407}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1435638141
 GameObject:
   m_ObjectHideFlags: 0
@@ -9405,7 +9430,7 @@ MonoBehaviour:
   controllerWaterParticles: {fileID: 1928030319}
   handWaterParticles: {fileID: 1509931990}
   handTrackedMode: 1
-  fireParticles: {fileID: 3858995744504863130}
+  fireParticles: {fileID: 1425542638}
   timeToExtinguish: 500
   fireExtinguishingAudio: {fileID: 639024570}
 --- !u!1 &1610021896
@@ -12075,16 +12100,15 @@ PrefabInstance:
       propertyPath: m_Name
       value: Fire Particle System
       objectReference: {fileID: 0}
+    - target: {fileID: 5543989624082180575, guid: 97457d13b31f2fa4f93ef2a2b7cf921d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 97457d13b31f2fa4f93ef2a2b7cf921d, type: 3}
---- !u!198 &3858995744504863130 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 5279448518729371906, guid: 97457d13b31f2fa4f93ef2a2b7cf921d, type: 3}
-  m_PrefabInstance: {fileID: 2337869816632722540}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7197081662534092482
 PrefabInstance:
   m_ObjectHideFlags: 0
