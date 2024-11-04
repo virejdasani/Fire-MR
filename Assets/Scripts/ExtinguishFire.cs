@@ -73,10 +73,10 @@ public class ExtinguishFire : MonoBehaviour
         }
 
         // check if the water particles are colliding with the fire particles for more than 3 seconds
-        if (controllerWaterParticles && fireParticles) {
-            if (controllerWaterParticles.IsAlive() && fireParticles.IsAlive()) {
+        if (currentWaterParticles && fireParticles) {
+            if (currentWaterParticles.IsAlive() && fireParticles.IsAlive()) {
                 // get the bounds of the water particles
-                Bounds waterBounds = controllerWaterParticles.GetComponent<Renderer>().bounds;
+                Bounds waterBounds = currentWaterParticles.GetComponent<Renderer>().bounds;
 
                 // get the bounds of the fire particles
                 Bounds fireBounds = fireParticles.GetComponent<Renderer>().bounds;
