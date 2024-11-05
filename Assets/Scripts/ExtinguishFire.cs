@@ -34,8 +34,21 @@ public class ExtinguishFire : MonoBehaviour
 
         // if the left trigger is pressed, play the water particles from the hand
         if (OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger) > 0.5f) {
+            if (!soundIsPlaying)
+            {
+                fireExtinguishingAudio.Play();
+                soundIsPlaying = true;
+            }
+
             currentWaterParticles.Play();
+            
         } else {
+          if (soundIsPlaying)
+          {
+              fireExtinguishingAudio.Stop();
+              soundIsPlaying = false;
+          }
+
             currentWaterParticles.Stop();
         }
 
