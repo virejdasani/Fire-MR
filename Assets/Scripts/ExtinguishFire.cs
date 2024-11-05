@@ -43,55 +43,14 @@ public class ExtinguishFire : MonoBehaviour
             currentWaterParticles.Play();
             
         } else {
-          if (soundIsPlaying)
-          {
-              fireExtinguishingAudio.Stop();
-              soundIsPlaying = false;
-          }
+            if (soundIsPlaying)
+            {
+                fireExtinguishingAudio.Stop();
+                soundIsPlaying = false;
+            }
 
             currentWaterParticles.Stop();
         }
-
-        // if (handTrackedMode) {
-        //     // while the w key is held down, play the water particles
-        //     if (Input.GetKey(KeyCode.W)) {
-        //         currentWaterParticles.Play();
-        //     } else {
-        //         currentWaterParticles.Stop();
-        //     }
-        // } else {
-        //     // if waterParticles is not null and the right trigger is pressed, play the water particles
-        //     if (OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger) > 0.5f) {
-        //         if (!soundIsPlaying)
-        //         {
-        //             fireExtinguishingAudio.Play();
-        //             soundIsPlaying = true;
-        //         }
-
-        //         currentWaterParticles.Play();
-
-        //     }
-        //     else {
-        //         if (soundIsPlaying)
-        //         {
-        //             fireExtinguishingAudio.Stop();
-        //             soundIsPlaying = false;
-        //         }
-
-        //         currentWaterParticles.Stop();
-
-        //     }
-        // }
-
-        // if (Input.GetKeyDown(KeyCode.W))
-        // {
-        //     fireExtinguishingAudio.Play();
-        // }
-
-        // if (Input.GetKeyUp(KeyCode.W))
-        // {
-        //     fireExtinguishingAudio.Stop();
-        // }
 
         // check if the water particles are colliding with the fire particles for more than 3 seconds
         if (currentWaterParticles && fireParticles) {
