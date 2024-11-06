@@ -6,6 +6,8 @@ using Unity.Services.Authentication;
 using Unity.Services.Core;
 using System.Threading.Tasks;
 using Unity.VisualScripting;
+using TMPro;
+
 
 public class ExtinguishFire : MonoBehaviour
 {
@@ -17,7 +19,10 @@ public class ExtinguishFire : MonoBehaviour
     ParticleSystem currentWaterParticles;
     bool soundIsPlaying;
 
-    public bool handTrackedMode = false;
+    // get tmp object
+    public TextMeshProUGUI serverConfigStatusText;
+
+    public bool handTrackedMode = true;
 
     public struct userAttributes
     {
@@ -57,30 +62,45 @@ public class ExtinguishFire : MonoBehaviour
         {
             case ConfigOrigin.Default:
                 Debug.Log("No settings loaded this session and no local cache file exists; using default values.");
+                serverConfigStatusText.text = "No settings loaded this session and no local cache file exists; using default values.";
+                serverConfigStatusText.text += "\nhandTrackedMode: " + RemoteConfigService.Instance.appConfig.GetBool("handTrackedMode");
                 break;
             case ConfigOrigin.Cached:
                 Debug.Log("No settings loaded this session; using cached values from a previous session.");
+                serverConfigStatusText.text = "No settings loaded this session; using cached values from a previous session.";
+                serverConfigStatusText.text += "\nhandTrackedMode: " + RemoteConfigService.Instance.appConfig.GetBool("handTrackedMode");
                 break;
             case ConfigOrigin.Remote:
-                Debug.Log("New settings loaded this session; update values accordingly.");
+                Debug.Log("New settings loaded this session; updated values accordingly.");
                 Debug.Log("handTrackedMode: " + RemoteConfigService.Instance.appConfig.GetBool("handTrackedMode"));
+                serverConfigStatusText.text = "New settings loaded this session; update values accordingly.";
+                serverConfigStatusText.text += "\nhandTrackedMode: " + RemoteConfigService.Instance.appConfig.GetBool("handTrackedMode");
                 break;
         }
 
+
         handTrackedMode = RemoteConfigService.Instance.appConfig.GetBool("handTrackedMode");
+      
+        // set the current particle system based on the handWaterParticlesOn boolean
+        if (handTrackedMode) {
+            currentWaterParticles = handWaterParticles;
+            controllerWaterParticles.Stop();
+        } else {
+            currentWaterParticles = controllerWaterParticles;
+            handWaterParticles.Stop();
+        }
+
+        Debug.Log("handTrackedMode: " + RemoteConfigService.Instance.appConfig.GetBool("handTrackedMode"));
+        // handTrackedMode = RemoteConfigService.Instance.appConfig.GetBool("handTrackedMode");
+        serverConfigStatusText.text += "\nhandTrackedMode: " + RemoteConfigService.Instance.appConfig.GetBool("handTrackedMode");
+
     }
 
     // Start is called before the first frame update
     void Start()
     {
-      // set the current particle system based on the handWaterParticlesOn boolean
-      if (handTrackedMode) {
-          currentWaterParticles = handWaterParticles;
-          controllerWaterParticles.Stop();
-      } else {
-          currentWaterParticles = controllerWaterParticles;
-          handWaterParticles.Stop();
-      }
+            controllerWaterParticles.Stop();
+            handWaterParticles.Stop();
 
       soundIsPlaying = false;
     }
@@ -88,7 +108,6 @@ public class ExtinguishFire : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
         // if the left trigger is pressed, play the water particles from the hand
         if (OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger) > 0.5f) {
             if (!soundIsPlaying)
