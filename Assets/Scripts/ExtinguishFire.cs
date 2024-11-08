@@ -52,7 +52,7 @@ public class ExtinguishFire : MonoBehaviour
         RemoteConfigService.Instance.FetchCompleted += ApplyRemoteConfig;
         await RemoteConfigService.Instance.FetchConfigsAsync(new userAttributes(), new appAttributes());
 
-        RemoteConfigService.Instance.GetConfig("handTrackedMode");
+        // RemoteConfigService.Instance.GetConfig("handTrackedMode", true);
     }
 
     void ApplyRemoteConfig(ConfigResponse configResponse)
@@ -79,7 +79,9 @@ public class ExtinguishFire : MonoBehaviour
         }
 
 
-        handTrackedMode = RemoteConfigService.Instance.appConfig.GetBool("handTrackedMode");
+        // TODO: set default val for when quest not on wifi
+        handTrackedMode = RemoteConfigService.Instance.appConfig.GetBool("handTrackedMode", true);
+
       
         // set the current particle system based on the handWaterParticlesOn boolean
         if (handTrackedMode) {
@@ -89,20 +91,23 @@ public class ExtinguishFire : MonoBehaviour
             currentWaterParticles = controllerWaterParticles;
             handWaterParticles.Stop();
         }
-
-        Debug.Log("handTrackedMode: " + RemoteConfigService.Instance.appConfig.GetBool("handTrackedMode"));
-        // handTrackedMode = RemoteConfigService.Instance.appConfig.GetBool("handTrackedMode");
-        serverConfigStatusText.text += "\nhandTrackedMode: " + RemoteConfigService.Instance.appConfig.GetBool("handTrackedMode");
-
     }
 
     // Start is called before the first frame update
     void Start()
     {
-            controllerWaterParticles.Stop();
-            handWaterParticles.Stop();
+        controllerWaterParticles.Stop();
+        handWaterParticles.Stop();
 
-      soundIsPlaying = false;
+        if (handTrackedMode) {
+            currentWaterParticles = handWaterParticles;
+        } else {
+            currentWaterParticles = controllerWaterParticles;
+        }
+
+        serverConfigStatusText.text += "\ncurrent water particles: " + currentWaterParticles;
+
+        soundIsPlaying = false;
     }
 
     // Update is called once per frame
