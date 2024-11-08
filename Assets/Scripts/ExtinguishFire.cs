@@ -19,7 +19,7 @@ public class ExtinguishFire : MonoBehaviour
     public ParticleSystem controllerWaterParticles;
     public ParticleSystem handWaterParticles;
     public ParticleSystem fireParticles;
-    public int timeToExtinguish = 500;
+    public int timeToExtinguish = 400;
     public AudioSource fireExtinguishingAudio;
     ParticleSystem currentWaterParticles;
     bool soundIsPlaying;
@@ -180,7 +180,7 @@ public class ExtinguishFire : MonoBehaviour
 
 
                 } else {
-                    timeToExtinguish = 500;
+                    timeToExtinguish = 300;
                     Debug.Log("Time to extinguish: " + timeToExtinguish);
                 }
             }
