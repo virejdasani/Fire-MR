@@ -23,18 +23,13 @@ public class ExtinguishFire : MonoBehaviour
     ParticleSystem currentWaterParticles;
     bool soundIsPlaying;
 
-    // get tmp object
     public TextMeshProUGUI serverConfigStatusText;
 
     public bool handTrackedMode = true;
 
-    public struct userAttributes
-    {
-    }
+    public struct userAttributes { }
 
-    public struct appAttributes
-    {
-    }
+    public struct appAttributes { }
 
 
     async Task InitializeRemoteConfigAsync()
@@ -75,18 +70,18 @@ public class ExtinguishFire : MonoBehaviour
         {
             case ConfigOrigin.Default:
                 Debug.Log("No settings loaded this session and no local cache file exists; using default values.");
-                serverConfigStatusText.text = "No settings loaded this session and no local cache file exists; using default values.";
+                serverConfigStatusText.text += "No settings loaded this session and no local cache file exists; using default values.";
                 serverConfigStatusText.text += "\nhandTrackedMode: " + RemoteConfigService.Instance.appConfig.GetBool("handTrackedMode");
                 break;
             case ConfigOrigin.Cached:
                 Debug.Log("No settings loaded this session; using cached values from a previous session.");
-                serverConfigStatusText.text = "No settings loaded this session; using cached values from a previous session.";
+                serverConfigStatusText.text += "No settings loaded this session; using cached values from a previous session.";
                 serverConfigStatusText.text += "\nhandTrackedMode: " + RemoteConfigService.Instance.appConfig.GetBool("handTrackedMode");
                 break;
             case ConfigOrigin.Remote:
                 Debug.Log("New settings loaded this session; updated values accordingly.");
                 Debug.Log("handTrackedMode: " + RemoteConfigService.Instance.appConfig.GetBool("handTrackedMode"));
-                serverConfigStatusText.text = "New settings loaded this session; update values accordingly.";
+                serverConfigStatusText.text += "New settings loaded this session; update values accordingly.";
                 serverConfigStatusText.text += "\nhandTrackedMode: " + RemoteConfigService.Instance.appConfig.GetBool("handTrackedMode");
                 break;
         }
