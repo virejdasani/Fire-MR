@@ -9833,7 +9833,7 @@ MonoBehaviour:
   controllerWaterParticles: {fileID: 1928030319}
   handWaterParticles: {fileID: 1509931990}
   fireParticles: {fileID: 1425542638}
-  timeToExtinguish: 500
+  timeToExtinguish: 400
   fireExtinguishingAudio: {fileID: 639024570}
   serverConfigStatusText: {fileID: 1346498257}
   handTrackedMode: 1

@@ -7,6 +7,7 @@ using Unity.Services.Core;
 using System.Threading.Tasks;
 using Unity.VisualScripting;
 using TMPro;
+using Unity.Services.CloudSave;
 
 
 
@@ -22,6 +23,8 @@ public class ExtinguishFire : MonoBehaviour
     public AudioSource fireExtinguishingAudio;
     ParticleSystem currentWaterParticles;
     bool soundIsPlaying;
+    int amtWaterUsed = 0;
+    int timeSinceFireStart = 0;
 
     public TextMeshProUGUI serverConfigStatusText;
 
@@ -50,7 +53,6 @@ public class ExtinguishFire : MonoBehaviour
         await UnityServices.InitializeAsync();
         await AuthenticationService.Instance.SignInAnonymouslyAsync();
 
-        cloudSaveDataManager.SaveDataToCLoud();
         cloudSaveDataManager.LoadDataFromCloud();
 
         // initialize Unity's authentication and core services
@@ -121,6 +123,9 @@ public class ExtinguishFire : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (fireParticles.IsAlive()) {
+            timeSinceFireStart += 1;
+        }
         // if the left trigger is pressed, play the water particles from the hand
         if (OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger) > 0.5f) {
             if (!soundIsPlaying)
@@ -129,6 +134,7 @@ public class ExtinguishFire : MonoBehaviour
                 soundIsPlaying = true;
             }
 
+            amtWaterUsed += 1;
             currentWaterParticles.Play();
             
         } else {
@@ -153,12 +159,26 @@ public class ExtinguishFire : MonoBehaviour
                 // check if the water particles are colliding with the fire particles
                 if (waterBounds.Intersects(fireBounds)) {
                     timeToExtinguish -= 1;
+                    serverConfigStatusText.text = "Time to extinguish: " + timeToExtinguish;
+                    serverConfigStatusText.text += "\nTime since fire start: " + timeSinceFireStart;
+                    serverConfigStatusText.text += "\nWater used: " + amtWaterUsed;
 
                     Debug.Log("Time to extinguish: " + timeToExtinguish);
 
-                    if (timeToExtinguish <= 0) {
+                    if (timeToExtinguish <= 0)
+                    {
                         fireParticles.Stop();
+
+                        var playerData = new Dictionary<string, object>{
+                            {"fireExtinguished", true},
+                            {"timeTaken", timeSinceFireStart},
+                            {"waterUsed", amtWaterUsed},
+                        };
+
+                        cloudSaveDataManager.SaveDataToCLoud(playerData);
                     }
+
+
                 } else {
                     timeToExtinguish = 500;
                     Debug.Log("Time to extinguish: " + timeToExtinguish);

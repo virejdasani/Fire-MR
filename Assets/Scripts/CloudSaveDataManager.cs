@@ -13,14 +13,8 @@ public class CloudSaveDataManager : MonoBehaviour
 {
     public TextMeshProUGUI serverConfigStatusText;
 
-    public async void SaveDataToCLoud()
+    public async void SaveDataToCLoud(Dictionary<string, object> playerData)
     {
-        var playerData = new Dictionary<string, object>{
-          {"fireExtinguished", true},
-          {"timeTaken", 220},
-          {"waterUsed", 9999},
-        };
-
         var result = await CloudSaveService.Instance.Data.Player.SaveAsync(playerData);
         Debug.Log($"Saved data {string.Join(',', playerData)}");
     }
