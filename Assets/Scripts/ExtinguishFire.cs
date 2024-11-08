@@ -13,7 +13,7 @@ using TMPro;
 
 public class ExtinguishFire : MonoBehaviour
 {
-    MyCloudSaveData myCloudSaveData;
+    CloudSaveDataManager cloudSaveDataManager;
     
     public ParticleSystem controllerWaterParticles;
     public ParticleSystem handWaterParticles;
@@ -50,13 +50,13 @@ public class ExtinguishFire : MonoBehaviour
 
     async Task Awake()
     {
-
-        myCloudSaveData = GameObject.FindGameObjectWithTag("RHController").GetComponent<MyCloudSaveData>();
+        cloudSaveDataManager = GameObject.FindGameObjectWithTag("RHController").GetComponent<CloudSaveDataManager>();
 
         await UnityServices.InitializeAsync();
         await AuthenticationService.Instance.SignInAnonymouslyAsync();
-        myCloudSaveData.SaveDataToCLoud();
-        myCloudSaveData.LoadDataFromCloud();
+
+        cloudSaveDataManager.SaveDataToCLoud();
+        cloudSaveDataManager.LoadDataFromCloud();
 
         // initialize Unity's authentication and core services
         await InitializeRemoteConfigAsync();
