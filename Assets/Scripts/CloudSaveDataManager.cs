@@ -45,4 +45,27 @@ public class CloudSaveDataManager : MonoBehaviour
             Debug.Log($"waterUsed value: {waterUsed.Value.GetAs<int>()}");
         }
     }
+
+    public async void SavePlayerFileToCloud(string fileName, string text)
+    {
+        byte[] file = System.Text.Encoding.UTF8.GetBytes(text);
+        await CloudSaveService.Instance.Files.Player.SaveAsync(fileName, file);
+        Debug.Log($"Saved file");
+    }
+
+    // function to make local txt file with filename, text
+    public void MakeLocalFile(string fileName, string text)
+    {
+        string path = fileName;
+        System.IO.File.WriteAllText(path, text);
+        Debug.Log("File created");
+    }
+
+    public string ReadLocalFile(string fileName)
+    {
+        string text = System.IO.File.ReadAllText(fileName);
+        Debug.Log("Text from file: " + text);
+        return text;
+    }
+
 }

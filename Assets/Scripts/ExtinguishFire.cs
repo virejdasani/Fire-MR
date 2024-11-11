@@ -54,6 +54,11 @@ public class ExtinguishFire : MonoBehaviour
         await AuthenticationService.Instance.SignInAnonymouslyAsync();
 
         cloudSaveDataManager.LoadDataFromCloud();
+        cloudSaveDataManager.SavePlayerFileToCloud("filee.csv", "VIREJV,IRE,J");
+
+        // local file testing
+        // cloudSaveDataManager.MakeLocalFile("filee.csv", "VIREJV,IRE,J");
+        // Debug.Log(cloudSaveDataManager.ReadLocalFile("filee.csv"));
 
         // initialize Unity's authentication and core services
         await InitializeRemoteConfigAsync();
