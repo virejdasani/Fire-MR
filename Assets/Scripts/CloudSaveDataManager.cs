@@ -30,7 +30,6 @@ public class CloudSaveDataManager : MonoBehaviour
         if (playerData.TryGetValue("fireExtinguished", out var fireExtinguished))
         {
             Debug.Log($"fireExtinguished value: {fireExtinguished.Value.GetAs<string>()}");
-
         }
 
         if (playerData.TryGetValue("timeTaken", out var timeTaken))
@@ -46,12 +45,19 @@ public class CloudSaveDataManager : MonoBehaviour
         }
     }
 
+
+    // https://docs.unity.com/ugs/manual/cloud-save/manual/tutorials/unity-sdk#Player_Files
     public async void SavePlayerFileToCloud(string fileName, string text)
     {
         byte[] file = System.Text.Encoding.UTF8.GetBytes(text);
         await CloudSaveService.Instance.Files.Player.SaveAsync(fileName, file);
         Debug.Log($"Saved file");
     }
+
+    // public async void GetPlayerFileAsByteArray()
+    // {
+    //     byte[] file = await CloudSaveService.Instance.Files.Player.LoadBytesAsync("fileName");
+    // }
 
     // function to make local txt file with filename, text
     public void MakeLocalFile(string fileName, string text)
