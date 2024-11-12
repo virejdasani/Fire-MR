@@ -54,7 +54,7 @@ public class ExtinguishFire : MonoBehaviour
         await AuthenticationService.Instance.SignInAnonymouslyAsync();
 
         cloudSaveDataManager.LoadDataFromCloud();
-        cloudSaveDataManager.SavePlayerFileToCloud("filee.csv", "VIREJV,IRE,J");
+        cloudSaveDataManager.SavePlayerFileToCloud("virejfilee.csv", "test,1,3,test");
 
         // local file testing
         // cloudSaveDataManager.MakeLocalFile("filee.csv", "VIREJV,IRE,J");
