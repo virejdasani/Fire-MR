@@ -15,6 +15,8 @@ using Unity.Services.CloudSave;
 public class ExtinguishFire : MonoBehaviour
 {
     CloudSaveDataManager cloudSaveDataManager;
+
+    public GameObject firePrefab;
     
     public ParticleSystem controllerWaterParticles;
     public ParticleSystem handWaterParticles;
@@ -128,10 +130,27 @@ public class ExtinguishFire : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        // ifthe right trigger is pressed, instantiate the fire particles at the hand position (y value set to 0)
+        if (OVRInput.GetDown(OVRInput.Button.SecondaryIndexTrigger))
+        {
+            // get the transform position in a varable and set the y value to 0
+            Vector3 spawnPos = transform.position;
+            spawnPos.y = 0;
+
+            GameObject spawnedFire = Instantiate(firePrefab, spawnPos, Quaternion.identity);
+
+            // set the fire particles to the instantiated fire particles child
+            fireParticles = spawnedFire.transform.GetChild(0).GetComponent<ParticleSystem>();
+        }
+
+
+        // if the fire particles are alive, increment the time since fire start
         if (fireParticles.IsAlive()) {
             timeSinceFireStart += 1;
         }
-        // if the left trigger is pressed, play the water particles from the hand
+
+        // if the left trigger is pressed, play the water particles from the hand and increment the water used and play the sound
         if (OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger) > 0.5f) {
             if (!soundIsPlaying)
             {
