@@ -36,6 +36,14 @@ public class ExtinguishFire : MonoBehaviour
 
     public struct appAttributes { }
 
+    // for hand squeeze tracking
+    public GameObject target1;
+    public GameObject target2;
+    public float distanceX;
+    public float distanceY;
+    public float distanceZ;
+    public float distanceTotal;
+
 
     async Task InitializeRemoteConfigAsync()
     {
@@ -131,6 +139,13 @@ public class ExtinguishFire : MonoBehaviour
     void Update()
     {
 
+        // for hand squeeze tracking
+        Vector3 delta = target2.transform.position - target1.transform.position;
+        distanceX = delta.x;
+        distanceY = delta.y;
+        distanceZ = delta.z;
+        distanceTotal = delta.magnitude * 100;
+
         // ifthe right trigger is pressed, instantiate the fire particles at the hand position (y value set to 0)
         if (OVRInput.GetDown(OVRInput.Button.SecondaryIndexTrigger))
         {
@@ -170,6 +185,32 @@ public class ExtinguishFire : MonoBehaviour
 
             currentWaterParticles.Stop();
         }
+
+
+        // hand squeeze tracked
+        if (distanceTotal < 4)
+        {
+            if (!soundIsPlaying)
+            {
+                fireExtinguishingAudio.Play();
+                soundIsPlaying = true;
+            }
+
+            amtWaterUsed += 1;
+            currentWaterParticles.Play();
+
+        }
+        else
+        {
+            if (soundIsPlaying)
+            {
+                fireExtinguishingAudio.Stop();
+                soundIsPlaying = false;
+            }
+
+            currentWaterParticles.Stop();
+        }
+
 
         // check if the water particles are colliding with the fire particles for more than 3 seconds
         if (currentWaterParticles && fireParticles) {
