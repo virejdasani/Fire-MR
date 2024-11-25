@@ -166,7 +166,7 @@ public class ExtinguishFire : MonoBehaviour
         }
 
         // if the left trigger is pressed, play the water particles from the hand and increment the water used and play the sound
-        if (OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger) > 0.5f) {
+        if ((OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger) > 0.5f) || (distanceTotal < 4)) {
             if (!soundIsPlaying)
             {
                 fireExtinguishingAudio.Play();
@@ -177,31 +177,6 @@ public class ExtinguishFire : MonoBehaviour
             currentWaterParticles.Play();
             
         } else {
-            if (soundIsPlaying)
-            {
-                fireExtinguishingAudio.Stop();
-                soundIsPlaying = false;
-            }
-
-            currentWaterParticles.Stop();
-        }
-
-
-        // hand squeeze tracked
-        if (distanceTotal < 4)
-        {
-            if (!soundIsPlaying)
-            {
-                fireExtinguishingAudio.Play();
-                soundIsPlaying = true;
-            }
-
-            amtWaterUsed += 1;
-            currentWaterParticles.Play();
-
-        }
-        else
-        {
             if (soundIsPlaying)
             {
                 fireExtinguishingAudio.Stop();
