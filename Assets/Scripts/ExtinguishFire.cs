@@ -1,23 +1,23 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
+using System.Threading.Tasks;
 using UnityEngine;
 using Unity.Services.RemoteConfig;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
-using System.Threading.Tasks;
-using Unity.VisualScripting;
 using TMPro;
 using Unity.Services.CloudSave;
-
-
-
+using System.Collections.Generic;
+using System.Net.NetworkInformation;
 
 public class ExtinguishFire : MonoBehaviour
 {
     CloudSaveDataManager cloudSaveDataManager;
 
     public GameObject firePrefab;
-    
+
     public ParticleSystem controllerWaterParticles;
     public ParticleSystem handWaterParticles;
     public ParticleSystem fireParticles;
@@ -44,6 +44,7 @@ public class ExtinguishFire : MonoBehaviour
     public float distanceZ;
     public float distanceTotal;
 
+    private TcpListener tcpListener;
 
     async Task InitializeRemoteConfigAsync()
     {
@@ -77,7 +78,8 @@ public class ExtinguishFire : MonoBehaviour
         RemoteConfigService.Instance.FetchCompleted += ApplyRemoteConfig;
         await RemoteConfigService.Instance.FetchConfigsAsync(new userAttributes(), new appAttributes());
 
-        // RemoteConfigService.Instance.GetConfig("handTrackedMode", true);
+        // Start the TCP server
+        StartServer();
     }
 
     void ApplyRemoteConfig(ConfigResponse configResponse)
@@ -103,19 +105,38 @@ public class ExtinguishFire : MonoBehaviour
                 break;
         }
 
-
         // TODO: set default val for when quest not on wifi
         handTrackedMode = RemoteConfigService.Instance.appConfig.GetBool("handTrackedMode", true);
 
-      
         // set the current particle system based on the handWaterParticlesOn boolean
-        if (handTrackedMode) {
+        if (handTrackedMode)
+        {
             currentWaterParticles = handWaterParticles;
             controllerWaterParticles.Stop();
-        } else {
+        }
+        else
+        {
             currentWaterParticles = controllerWaterParticles;
             handWaterParticles.Stop();
         }
+    }
+
+    private string GetLocalIPv4Address()
+    {
+        foreach (NetworkInterface networkInterface in NetworkInterface.GetAllNetworkInterfaces())
+        {
+            if (networkInterface.OperationalStatus == OperationalStatus.Up)
+            {
+                foreach (UnicastIPAddressInformation unicastIPAddressInformation in networkInterface.GetIPProperties().UnicastAddresses)
+                {
+                    if (unicastIPAddressInformation.Address.AddressFamily == AddressFamily.InterNetwork)
+                    {
+                        return unicastIPAddressInformation.Address.ToString();
+                    }
+                }
+            }
+        }
+        return "No network adapters with an IPv4 address in the system!";
     }
 
     // Start is called before the first frame update
@@ -124,21 +145,27 @@ public class ExtinguishFire : MonoBehaviour
         controllerWaterParticles.Stop();
         handWaterParticles.Stop();
 
-        if (handTrackedMode) {
+        if (handTrackedMode)
+        {
             currentWaterParticles = handWaterParticles;
-        } else {
+        }
+        else
+        {
             currentWaterParticles = controllerWaterParticles;
         }
 
         serverConfigStatusText.text += "\ncurrent water particles: " + currentWaterParticles;
 
         soundIsPlaying = false;
+
+        string localIPAddress = GetLocalIPv4Address();
+        Debug.Log("Local IPv4 Address: " + localIPAddress);
+        serverConfigStatusText.text += "\nLocal IPv4 Address: " + localIPAddress;
     }
 
     // Update is called once per frame
     void Update()
     {
-
         // for hand squeeze tracking
         Vector3 delta = target2.transform.position - target1.transform.position;
         distanceX = delta.x;
@@ -159,14 +186,15 @@ public class ExtinguishFire : MonoBehaviour
             fireParticles = spawnedFire.transform.GetChild(0).GetComponent<ParticleSystem>();
         }
 
-
         // if the fire particles are alive, increment the time since fire start
-        if (fireParticles.IsAlive()) {
+        if (fireParticles.IsAlive())
+        {
             timeSinceFireStart += 1;
         }
 
         // if the left trigger is pressed, play the water particles from the hand and increment the water used and play the sound
-        if ((OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger) > 0.5f) || (distanceTotal < 4)) {
+        if ((OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger) > 0.5f) || (distanceTotal < 4))
+        {
             if (!soundIsPlaying)
             {
                 fireExtinguishingAudio.Play();
@@ -175,8 +203,10 @@ public class ExtinguishFire : MonoBehaviour
 
             amtWaterUsed += 1;
             currentWaterParticles.Play();
-            
-        } else {
+
+        }
+        else
+        {
             if (soundIsPlaying)
             {
                 fireExtinguishingAudio.Stop();
@@ -186,10 +216,11 @@ public class ExtinguishFire : MonoBehaviour
             currentWaterParticles.Stop();
         }
 
-
         // check if the water particles are colliding with the fire particles for more than 3 seconds
-        if (currentWaterParticles && fireParticles) {
-            if (currentWaterParticles.IsAlive() && fireParticles.IsAlive()) {
+        if (currentWaterParticles && fireParticles)
+        {
+            if (currentWaterParticles.IsAlive() && fireParticles.IsAlive())
+            {
                 // get the bounds of the water particles
                 Bounds waterBounds = currentWaterParticles.GetComponent<Renderer>().bounds;
 
@@ -197,7 +228,8 @@ public class ExtinguishFire : MonoBehaviour
                 Bounds fireBounds = fireParticles.GetComponent<Renderer>().bounds;
 
                 // check if the water particles are colliding with the fire particles
-                if (waterBounds.Intersects(fireBounds)) {
+                if (waterBounds.Intersects(fireBounds))
+                {
                     timeToExtinguish -= 1;
                     serverConfigStatusText.text = "Time to extinguish: " + timeToExtinguish;
                     serverConfigStatusText.text += "\nTime since fire start: " + timeSinceFireStart;
@@ -218,12 +250,95 @@ public class ExtinguishFire : MonoBehaviour
                         cloudSaveDataManager.SaveDataToCLoud(playerData);
                     }
 
-
-                } else {
+                }
+                else
+                {
                     timeToExtinguish = 300;
                     Debug.Log("Time to extinguish: " + timeToExtinguish);
                 }
             }
         }
+    }
+
+    private async void StartServer()
+    {
+        tcpListener = new TcpListener(IPAddress.Any, 41196);
+        tcpListener.Start();
+        Debug.Log("Server started.");
+        serverConfigStatusText.text += "server started!!";
+
+
+        while (true)
+        {
+            TcpClient client = await tcpListener.AcceptTcpClientAsync();
+            _ = HandleClientAsync(client);  // Fire and forget
+        }
+    }
+
+    private async Task HandleClientAsync(TcpClient client)
+    {
+        NetworkStream stream = client.GetStream();
+        byte[] buffer = new byte[2048];
+
+        try
+        {
+            while (true)
+            {
+                int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
+                if (bytesRead == 0) break;  // Client disconnected
+
+                string message = Encoding.UTF8.GetString(buffer, 0, bytesRead);
+                Debug.Log("Received: " + message);
+                serverConfigStatusText.text = "\nReceived: " + message;
+
+                if (int.TryParse(message, out int value))
+                {
+                    if (value < 50000)
+                    {
+                        //if (!currentWaterParticles.isPlaying)
+                        //{
+                            currentWaterParticles.Play();
+                            Debug.Log("Particles started.");
+                            serverConfigStatusText.text += "\nParticles started.";
+                        //}
+                    }
+                    else
+                    {
+                        //if (currentWaterParticles.isPlaying)
+                        //{
+                            currentWaterParticles.Stop();
+                            Debug.Log("Particles stopped.");
+                            serverConfigStatusText.text += "\nParticles stopped.";
+                        //}
+                    }
+                }
+                else
+                {
+                    Debug.LogError("Received invalid number: " + message);
+                    serverConfigStatusText.text += "\nReceived invalid number: " + message;
+                }
+
+                byte[] response = Encoding.UTF8.GetBytes("Echo: " + message);
+                await stream.WriteAsync(response, 0, response.Length);
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError("Exception: " + ex.Message);
+            serverConfigStatusText.text += "Exception: " + ex.Message;
+        }
+        finally
+        {
+            stream.Close();
+            client.Close();
+        }
+    }
+
+    private void OnApplicationQuit()
+    {
+        tcpListener.Stop();
+        Debug.Log("Server stopped.");
+        serverConfigStatusText.text += "server stopped";
+
     }
 }
