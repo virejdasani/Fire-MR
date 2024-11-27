@@ -295,6 +295,7 @@ public class ExtinguishFire : MonoBehaviour
                 {
                     if (value < 50000)
                     {
+                        // todo: try uncommenting these
                         //if (!currentWaterParticles.isPlaying)
                         //{
                             currentWaterParticles.Play();
