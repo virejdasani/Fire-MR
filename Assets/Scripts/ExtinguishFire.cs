@@ -30,19 +30,21 @@ public class ExtinguishFire : MonoBehaviour
 
     public TextMeshProUGUI serverConfigStatusText;
 
-    public bool handTrackedMode = true;
+    public bool handTrackedMode = true; // false means controller trigger
+
+    public bool leftHandSqueezeTrigger = true; // false means left hand squeeze wont trigger water particles
 
     public struct userAttributes { }
 
     public struct appAttributes { }
 
     // for hand squeeze tracking
-    public GameObject target1;
-    public GameObject target2;
-    public float distanceX;
-    public float distanceY;
-    public float distanceZ;
-    public float distanceTotal;
+    public GameObject palmCenterCollider;
+    public GameObject middleFingerCollider;
+    float distanceX;
+    float distanceY;
+    float distanceZ;
+    public float distanceBetweenFingerAndPalm;
 
     private TcpListener tcpListener;
 
@@ -166,34 +168,18 @@ public class ExtinguishFire : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // for hand squeeze tracking
-        Vector3 delta = target2.transform.position - target1.transform.position;
-        distanceX = delta.x;
-        distanceY = delta.y;
-        distanceZ = delta.z;
-        distanceTotal = delta.magnitude * 100;
-
-        // ifthe right trigger is pressed, instantiate the fire particles at the hand position (y value set to 0)
-        if (OVRInput.GetDown(OVRInput.Button.SecondaryIndexTrigger))
-        {
-            // get the transform position in a varable and set the y value to 0
-            Vector3 spawnPos = transform.position;
-            spawnPos.y = 0;
-
-            GameObject spawnedFire = Instantiate(firePrefab, spawnPos, Quaternion.identity);
-
-            // set the fire particles to the instantiated fire particles child
-            fireParticles = spawnedFire.transform.GetChild(0).GetComponent<ParticleSystem>();
-        }
-
-        // if the fire particles are alive, increment the time since fire start
-        if (fireParticles.IsAlive())
-        {
-            timeSinceFireStart += 1;
+        if (leftHandSqueezeTrigger) {
+            // for hand squeeze tracking
+            Vector3 delta = middleFingerCollider.transform.position - palmCenterCollider.transform.position;
+            distanceX = delta.x;
+            distanceY = delta.y;
+            distanceZ = delta.z;
+            distanceBetweenFingerAndPalm = delta.magnitude * 100;
         }
 
         // if the left trigger is pressed, play the water particles from the hand and increment the water used and play the sound
-        if ((OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger) > 0.5f) || (distanceTotal < 4))
+        if ((OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger) > 0.5f)||
+            (leftHandSqueezeTrigger && (distanceBetweenFingerAndPalm < 4)))
         {
             if (!soundIsPlaying)
             {
@@ -214,6 +200,25 @@ public class ExtinguishFire : MonoBehaviour
             }
 
             currentWaterParticles.Stop();
+        }
+
+        // ifthe right trigger is pressed, instantiate the fire particles at the hand position (y value set to 0)
+        if (OVRInput.GetDown(OVRInput.Button.SecondaryIndexTrigger))
+        {
+            // get the transform position in a varable and set the y value to 0
+            Vector3 spawnPos = transform.position;
+            spawnPos.y = 0;
+
+            GameObject spawnedFire = Instantiate(firePrefab, spawnPos, Quaternion.identity);
+
+            // set the fire particles to the instantiated fire particles child
+            fireParticles = spawnedFire.transform.GetChild(0).GetComponent<ParticleSystem>();
+        }
+
+        // if the fire particles are alive, increment the time since fire start
+        if (fireParticles.IsAlive())
+        {
+            timeSinceFireStart += 1;
         }
 
         // check if the water particles are colliding with the fire particles for more than 3 seconds

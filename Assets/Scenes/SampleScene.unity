@@ -15629,12 +15629,10 @@ MonoBehaviour:
   fireExtinguishingAudio: {fileID: 639024570}
   serverConfigStatusText: {fileID: 1346498257}
   handTrackedMode: 1
-  target1: {fileID: 402229881}
-  target2: {fileID: 992730264}
-  distanceX: 0
-  distanceY: 0
-  distanceZ: 0
-  distanceTotal: 0
+  handSqueezeTrigger: 0
+  palmCenterCollider: {fileID: 402229881}
+  middleFingerCollider: {fileID: 992730264}
+  distanceBetweenFingerAndPalm: 0
 --- !u!114 &1605786542
 MonoBehaviour:
   m_ObjectHideFlags: 0
