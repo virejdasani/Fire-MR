@@ -156,8 +156,6 @@ public class ExtinguishFire : MonoBehaviour
             currentWaterParticles = controllerWaterParticles;
         }
 
-        serverConfigStatusText.text += "\ncurrent water particles: " + currentWaterParticles;
-
         soundIsPlaying = false;
 
         string localIPAddress = GetLocalIPv4Address();
@@ -270,7 +268,7 @@ public class ExtinguishFire : MonoBehaviour
         tcpListener = new TcpListener(IPAddress.Any, 41196);
         tcpListener.Start();
         Debug.Log("Server started.");
-        serverConfigStatusText.text += "server started!!";
+        serverConfigStatusText.text += "\nServer started!!";
 
 
         while (true)
