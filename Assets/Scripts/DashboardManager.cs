@@ -32,12 +32,13 @@ public class DashboardManager : MonoBehaviour
         byte[] file = await CloudSaveService.Instance.Files.Player.LoadBytesAsync("virejfilee.csv");
         string text = System.Text.Encoding.UTF8.GetString(file);
         Debug.Log($"0999 Text from file from cloud: {text}");
+        uiText.text = text;
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        Debug.Log("DashboardManager Start");
     }
 
     // Update is called once per frame
