@@ -15,6 +15,8 @@ using System.Net.NetworkInformation;
 public class ExtinguishFire : MonoBehaviour
 {
     CloudSaveDataManager cloudSaveDataManager;
+    ScoreManager scoreManager;
+
 
     public GameObject firePrefab;
 
@@ -62,6 +64,7 @@ public class ExtinguishFire : MonoBehaviour
     async Task Awake()
     {
         cloudSaveDataManager = GameObject.FindGameObjectWithTag("RHController").GetComponent<CloudSaveDataManager>();
+        scoreManager = GameObject.FindGameObjectWithTag("RHController").GetComponent<ScoreManager>();
 
         await UnityServices.InitializeAsync();
         await AuthenticationService.Instance.SignInAnonymouslyAsync();
@@ -69,9 +72,11 @@ public class ExtinguishFire : MonoBehaviour
         cloudSaveDataManager.LoadDataFromCloud();
         cloudSaveDataManager.SavePlayerFileToCloud("virejfilee.csv", "test,1,3,test");
 
-        // local file testing
-        // cloudSaveDataManager.MakeLocalFile("filee.csv", "VIREJV,IRE,J");
-        // Debug.Log(cloudSaveDataManager.ReadLocalFile("filee.csv"));
+        // read the file from cloud
+        byte[] file = await CloudSaveService.Instance.Files.Player.LoadBytesAsync("virejfilee.csv");
+        string text = System.Text.Encoding.UTF8.GetString(file);
+        Debug.Log($"0999 Text from file from cloud: {text}");
+        serverConfigStatusText.text += "\nText from file from cloud: " + text;
 
         // initialize Unity's authentication and core services
         await InitializeRemoteConfigAsync();
@@ -251,6 +256,8 @@ public class ExtinguishFire : MonoBehaviour
                         };
 
                         cloudSaveDataManager.SaveDataToCLoud(playerData);
+
+                        scoreManager.getFinalScore(true, timeToExtinguish, amtWaterUsed, timeSinceFireStart);
                     }
 
                 }
