@@ -69,14 +69,14 @@ public class ExtinguishFire : MonoBehaviour
         await UnityServices.InitializeAsync();
         await AuthenticationService.Instance.SignInAnonymouslyAsync();
 
-        cloudSaveDataManager.LoadDataFromCloud();
-        cloudSaveDataManager.SavePlayerFileToCloud("virejfilee.csv", "test,1,3,test");
+        // cloudSaveDataManager.LoadDataFromCloud();
+        // cloudSaveDataManager.SavePlayerFileToCloud("virejfilee.csv", "test,1,3,test");
 
-        // read the file from cloud
-        byte[] file = await CloudSaveService.Instance.Files.Player.LoadBytesAsync("virejfilee.csv");
-        string text = System.Text.Encoding.UTF8.GetString(file);
-        Debug.Log($"0999 Text from file from cloud: {text}");
-        serverConfigStatusText.text += "\nText from file from cloud: " + text;
+        // sends device name to cloud in public player data so it can be read by tablet app
+        string userDevice = SystemInfo.deviceName;
+        Debug.Log("Device Name: " + userDevice);
+        cloudSaveDataManager.SavePublicData("deviceNew", userDevice);
+        cloudSaveDataManager.LoadPublicDataByAllPlayerIds("deviceNew");
 
         // initialize Unity's authentication and core services
         await InitializeRemoteConfigAsync();
