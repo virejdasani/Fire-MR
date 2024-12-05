@@ -15,6 +15,8 @@ using System.Net.NetworkInformation;
 public class ExtinguishFire : MonoBehaviour
 {
     CloudSaveDataManager cloudSaveDataManager;
+    ScoreManager scoreManager;
+
 
     public GameObject firePrefab;
 
@@ -62,16 +64,19 @@ public class ExtinguishFire : MonoBehaviour
     async Task Awake()
     {
         cloudSaveDataManager = GameObject.FindGameObjectWithTag("RHController").GetComponent<CloudSaveDataManager>();
+        scoreManager = GameObject.FindGameObjectWithTag("RHController").GetComponent<ScoreManager>();
 
         await UnityServices.InitializeAsync();
         await AuthenticationService.Instance.SignInAnonymouslyAsync();
 
-        cloudSaveDataManager.LoadDataFromCloud();
-        cloudSaveDataManager.SavePlayerFileToCloud("virejfilee.csv", "test,1,3,test");
+        // cloudSaveDataManager.LoadDataFromCloud();
+        // cloudSaveDataManager.SavePlayerFileToCloud("virejfilee.csv", "test,1,3,test");
 
-        // local file testing
-        // cloudSaveDataManager.MakeLocalFile("filee.csv", "VIREJV,IRE,J");
-        // Debug.Log(cloudSaveDataManager.ReadLocalFile("filee.csv"));
+        // sends device name to cloud in public player data so it can be read by tablet app
+        string userDevice = SystemInfo.deviceName;
+        Debug.Log("Device Name: " + userDevice);
+        cloudSaveDataManager.SavePublicData("deviceNew", userDevice);
+        cloudSaveDataManager.LoadPublicDataByAllPlayerIds("deviceNew");
 
         // initialize Unity's authentication and core services
         await InitializeRemoteConfigAsync();
@@ -251,6 +256,8 @@ public class ExtinguishFire : MonoBehaviour
                         };
 
                         cloudSaveDataManager.SaveDataToCLoud(playerData);
+
+                        scoreManager.getFinalScore(true, timeToExtinguish, amtWaterUsed, timeSinceFireStart);
                     }
 
                 }
