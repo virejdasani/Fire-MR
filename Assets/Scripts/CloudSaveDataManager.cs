@@ -10,6 +10,7 @@ using Unity.Services.Core;
 using Unity.Services.RemoteConfig;
 using UnityEngine;
 using SaveOptions = Unity.Services.CloudSave.Models.Data.Player.SaveOptions;
+using System.IO;
 
 
 public class CloudSaveDataManager : MonoBehaviour
@@ -84,6 +85,8 @@ public class CloudSaveDataManager : MonoBehaviour
       System.IO.File.WriteAllText(path, text);
       Debug.Log("File create locally: " + path);
   }
+
+  
 
     // saves data to the cloud with public read access for all players
     public async void SavePublicData(string key, string data)
@@ -174,4 +177,26 @@ public class CloudSaveDataManager : MonoBehaviour
       Debug.Log("Reading Text from local file: " + text);
       return text;
   }
+
+      public void WriteToFile(string fileName, string contents)
+    {
+        Debug.Log("Writing Text to local file = " + fileName);
+        string path = Application.persistentDataPath + "/" + fileName;
+        File.WriteAllText(path, contents);
+    }
+
+    public string ReadFileContents(string fileName)
+    {
+        string path = Application.persistentDataPath + "/" + fileName;
+        string text = File.ReadAllText(path);
+        Debug.Log("Reading Text from local file is = " + text);
+        return text;
+    }
+
+    // function takes in a fileName and pushes the contents of the file to the cloud as a string using SaveDataToCloud with key as the FILECONTENTS and value as the contents of the file
+    public void SaveFileToCloudAsPlayerData(string fileName)
+    {
+        string text = ReadFileContents(fileName);
+        SavePublicData("FILECONTENTS", text);
+    }
 }
