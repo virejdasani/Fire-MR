@@ -100,7 +100,6 @@ public class CloudSaveDataManager : MonoBehaviour
     // loads data from the cloud with public read access for a specific player
     public async void LoadPublicDataByPlayerId()
     {
-        // todo: get all player ids in an array, when sending data from the headset side, make sure it is public
         var playerId = "gtISJtVu72LykdN6ohBZgNMf2Mfy";
 
         Debug.Log("Loading public data by player id" + playerId);
@@ -112,7 +111,12 @@ public class CloudSaveDataManager : MonoBehaviour
         }
     }
 
-    string[] allPlayerIDs = new string[] { "gtISJtVu72LykdN6ohBZgNMf2Mfy", "SWLFCT1V5db4H8AH4cAaXYnW1r67" };
+    string[] allPlayerIDs = new string[] {
+      "SWLFCT1V5db4H8AH4cAaXYnW1r67",
+      "gtISJtVu72LykdN6ohBZgNMf2Mfy",
+      "jz46kXj64jRxIAyxwRooEEhBhlAl",
+      "z1MkqBhkOvDwIeIMl6LQ7eLT4ONW"
+      };
     
     // loop through all player ids and load public data
     public async void LoadPublicDataByAllPlayerIds(string key)

@@ -34,6 +34,8 @@ public class ExtinguishFire : MonoBehaviour
 
     public bool handTrackedMode = true; // false means controller trigger
 
+    public string currentPlayerName = "Default Player";
+
     public bool leftHandSqueezeTrigger = true; // false means left hand squeeze wont trigger water particles
 
     public struct userAttributes { }
@@ -96,24 +98,21 @@ public class ExtinguishFire : MonoBehaviour
         {
             case ConfigOrigin.Default:
                 Debug.Log("No settings loaded this session and no local cache file exists; using default values.");
-                serverConfigStatusText.text += "No settings loaded this session and no local cache file exists; using default values.";
-                serverConfigStatusText.text += "\nhandTrackedMode: " + RemoteConfigService.Instance.appConfig.GetBool("handTrackedMode");
                 break;
             case ConfigOrigin.Cached:
                 Debug.Log("No settings loaded this session; using cached values from a previous session.");
-                serverConfigStatusText.text += "No settings loaded this session; using cached values from a previous session.";
-                serverConfigStatusText.text += "\nhandTrackedMode: " + RemoteConfigService.Instance.appConfig.GetBool("handTrackedMode");
                 break;
             case ConfigOrigin.Remote:
                 Debug.Log("New settings loaded this session; updated values accordingly.");
                 Debug.Log("handTrackedMode: " + RemoteConfigService.Instance.appConfig.GetBool("handTrackedMode"));
-                serverConfigStatusText.text += "New settings loaded this session; update values accordingly.";
-                serverConfigStatusText.text += "\nhandTrackedMode: " + RemoteConfigService.Instance.appConfig.GetBool("handTrackedMode");
+                Debug.Log("currentPlayerName: " + RemoteConfigService.Instance.appConfig.GetString("currentPlayerName"));
+
+
                 break;
         }
 
-        // TODO: set default val for when quest not on wifi
         handTrackedMode = RemoteConfigService.Instance.appConfig.GetBool("handTrackedMode", true);
+        currentPlayerName = RemoteConfigService.Instance.appConfig.GetString("currentPlayerName", "Default Player");
 
         // set the current particle system based on the handWaterParticlesOn boolean
         if (handTrackedMode)
@@ -244,20 +243,24 @@ public class ExtinguishFire : MonoBehaviour
                     serverConfigStatusText.text += "\nWater used: " + amtWaterUsed;
 
                     Debug.Log("Time to extinguish: " + timeToExtinguish);
-
+                    
+                    // if the time to extinguish is less than or equal to 0, stop the fire particles and get the final score
                     if (timeToExtinguish <= 0)
                     {
                         fireParticles.Stop();
 
-                        var playerData = new Dictionary<string, object>{
-                            {"fireExtinguished", true},
-                            {"timeTaken", timeSinceFireStart},
-                            {"waterUsed", amtWaterUsed},
-                        };
+                        // var playerData = new Dictionary<string, object>{
+                        //     {"fireExtinguished", true},
+                        //     {"timeTaken", timeSinceFireStart},
+                        //     {"waterUsed", amtWaterUsed},
+                        // };
 
-                        cloudSaveDataManager.SaveDataToCLoud(playerData);
+                        // cloudSaveDataManager.SaveDataToCLoud(playerData);
 
-                        scoreManager.getFinalScore(true, timeToExtinguish, amtWaterUsed, timeSinceFireStart);
+                        scoreManager.getFinalScore(currentPlayerName, true, timeToExtinguish, amtWaterUsed, timeSinceFireStart);
+                        // shw this device id on the screen
+                        serverConfigStatusText.text += "\nDevice ID: " + SystemInfo.deviceUniqueIdentifier;
+                        
                     }
 
                 }
