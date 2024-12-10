@@ -23,6 +23,7 @@ public class ExtinguishFire : MonoBehaviour
     public ParticleSystem controllerWaterParticles;
     public ParticleSystem handWaterParticles;
     public ParticleSystem fireParticles;
+    public GameObject fireAlarm;
     public int timeToExtinguish = 400;
     public AudioSource fireExtinguishingAudio;
     ParticleSystem currentWaterParticles;
@@ -204,17 +205,28 @@ public class ExtinguishFire : MonoBehaviour
             currentWaterParticles.Stop();
         }
 
-        // ifthe right trigger is pressed, instantiate the fire particles at the hand position (y value set to 0)
-        if (OVRInput.GetDown(OVRInput.Button.SecondaryIndexTrigger))
+        // ifthe right trigger is pressed, instantiate the fire particles at the hand position
+        if (OVRInput.GetDown(OVRInput.Button.SecondaryThumbstick))
         {
             // get the transform position in a varable and set the y value to 0
             Vector3 spawnPos = transform.position;
-            spawnPos.y = 0;
+            // spawnPos.y = 0; // this is if we want to spawn the fire particles at the floor level
 
             GameObject spawnedFire = Instantiate(firePrefab, spawnPos, Quaternion.identity);
 
             // set the fire particles to the instantiated fire particles child
             fireParticles = spawnedFire.transform.GetChild(0).GetComponent<ParticleSystem>();
+        }
+
+        // if the a button is pressed, add a fire alarm game object to the position of the hand
+        if (OVRInput.GetDown(OVRInput.Button.Two))
+        {
+            Vector3 spawnPos = transform.position;
+
+            // make the rotation of the fire alarm the same as the hand
+            Quaternion spawnRot = transform.rotation;
+
+            Instantiate(fireAlarm, spawnPos, spawnRot);
         }
 
         // if the fire particles are alive, increment the time since fire start
