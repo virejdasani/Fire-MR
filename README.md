@@ -1,6 +1,6 @@
 # HandTrackedARFireTraining
 
-Instructions on how to demo
+Instructions on how to demo (this is the same for the MR and for the VR versions of the app (called ARFTPT and VRFT respectively))
 
 If app is already downloaded on the quest, go to step 2.
 
