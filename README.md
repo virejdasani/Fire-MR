@@ -43,5 +43,5 @@ In a demo with multiple people trying the headset, it is easier to just restart 
 3. Data collection
 
 - If the quest was connected to wifi/hotspot when the fire training was done, it will automatically send data to the cloud with insights like the time taken to extinguish fire, amount of water used, and we will add more - I have made the workflow easy to add more data to.
-- This data goes to this website (we will change the domain in the future): https://firetraining.netlify.app/
+- This data goes to this website (we will change the domain in the future): https://firetraining.n.app/
 - If you are demoing the app with the website, its a good idea to first go to the website and where it says `Click here to set the current trainee name before starting the training`, ask the user for thier name and enter it there. This is not required to demo the website because I have put enough real and dummy data to give anyone a gist of what its capable of doing.
