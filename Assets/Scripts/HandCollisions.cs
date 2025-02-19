@@ -22,7 +22,7 @@ public class HandCollisions : MonoBehaviour
 
     void OnTriggerEnter(Collider collision)
     {
-        Debug.Log("touched sum");
+        Debug.Log("touched alarm");
 
         if (collision.gameObject.tag == "fireAlarm")
         {

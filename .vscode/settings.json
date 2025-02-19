@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "HandTrackedARFireTraining.sln"
+    "dotnet.defaultSolution": "FYP-virej-MRHTFT.sln"
 }

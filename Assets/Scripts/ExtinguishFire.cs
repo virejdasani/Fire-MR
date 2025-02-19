@@ -2,6 +2,7 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Collections;
 using System.Threading.Tasks;
 using UnityEngine;
 using Unity.Services.RemoteConfig;
@@ -25,6 +26,13 @@ public class ExtinguishFire : MonoBehaviour
     public ParticleSystem fireParticles;
     public GameObject fireAlarm;
     public int timeToExtinguish = 400;
+
+    public AudioSource aiNarrationAudio;
+    // 4 ai audio clips for the game
+    public AudioClip aiNarrationWelcome1;
+    public AudioClip aiNarrationWelcome2;
+    public AudioClip aiNarrationWelcome3;
+    public AudioClip aiNarrationFinished;
     public AudioSource fireExtinguishingAudio;
     ParticleSystem currentWaterParticles;
     bool soundIsPlaying;
@@ -229,6 +237,14 @@ public class ExtinguishFire : MonoBehaviour
             Instantiate(fireAlarm, spawnPos, spawnRot);
         }
 
+        // if the left thumbstick is pressed, play the ai narration audio or the space bar is pressed
+        if (OVRInput.GetDown(OVRInput.Button.PrimaryThumbstick) || Input.GetKeyDown(KeyCode.D))
+        {
+            Debug.Log("Playing AI Narration");
+            
+            StartAINarration();
+        }
+
         // if the fire particles are alive, increment the time since fire start
         if (fireParticles.IsAlive())
         {
@@ -261,6 +277,10 @@ public class ExtinguishFire : MonoBehaviour
                     {
                         fireParticles.Stop();
 
+                        // play the ai finished audio when the fire is extinguished
+                        aiNarrationAudio.PlayOneShot(aiNarrationFinished);
+
+
                         // var playerData = new Dictionary<string, object>{
                         //     {"fireExtinguished", true},
                         //     {"timeTaken", timeSinceFireStart},
@@ -283,6 +303,26 @@ public class ExtinguishFire : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void StartAINarration()
+    {
+        StartCoroutine(PlayAINarration());
+    }
+
+    private IEnumerator PlayAINarration()
+    {
+        // Play the first audio clip
+        aiNarrationAudio.PlayOneShot(aiNarrationWelcome1);
+        yield return new WaitWhile(() => aiNarrationAudio.isPlaying);
+
+        // Play the second audio clip
+        aiNarrationAudio.PlayOneShot(aiNarrationWelcome2);
+        yield return new WaitWhile(() => aiNarrationAudio.isPlaying);
+
+        // Play the third audio clip
+        aiNarrationAudio.PlayOneShot(aiNarrationWelcome3);
+        yield return new WaitWhile(() => aiNarrationAudio.isPlaying);
     }
 
     private async void StartServer()
