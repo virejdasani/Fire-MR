@@ -25,14 +25,14 @@ public class ExtinguishFire : MonoBehaviour
     public ParticleSystem handWaterParticles;
     public ParticleSystem fireParticles;
     public GameObject fireAlarm;
-    public int timeToExtinguish = 400;
+    public int timeToExtinguish = 600;
 
     public AudioSource aiNarrationAudio;
+    public AudioSource endAINarrationAudio;
     // 4 ai audio clips for the game
     public AudioClip aiNarrationWelcome1;
     public AudioClip aiNarrationWelcome2;
     public AudioClip aiNarrationWelcome3;
-    public AudioClip aiNarrationFinished;
     public AudioSource fireExtinguishingAudio;
     ParticleSystem currentWaterParticles;
     bool soundIsPlaying;
@@ -58,6 +58,7 @@ public class ExtinguishFire : MonoBehaviour
     float distanceY;
     float distanceZ;
     public float distanceBetweenFingerAndPalm;
+    public bool handControlsLocked = true;
 
     private TcpListener tcpListener;
 
@@ -187,32 +188,34 @@ public class ExtinguishFire : MonoBehaviour
             distanceZ = delta.z;
             distanceBetweenFingerAndPalm = delta.magnitude * 100;
         }
-
-        // if the left trigger is pressed, play the water particles from the hand and increment the water used and play the sound
-        if ((OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger) > 0.5f)||
-            (leftHandSqueezeTrigger && (distanceBetweenFingerAndPalm < 4)))
+        
+        if (!handControlsLocked) 
         {
-            if (!soundIsPlaying)
-            {
-                fireExtinguishingAudio.Play();
-                soundIsPlaying = true;
-            }
+          // if the left trigger is pressed, play the water particles from the hand and increment the water used and play the sound
+          if ((OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger) > 0.5f)||
+              (leftHandSqueezeTrigger && (distanceBetweenFingerAndPalm < 4)))
+          {
+              if (!soundIsPlaying)
+              {
+                  fireExtinguishingAudio.Play();
+                  soundIsPlaying = true;
+              }
 
-            amtWaterUsed += 1;
-            currentWaterParticles.Play();
+              amtWaterUsed += 1;
+              currentWaterParticles.Play();
 
+          }
+          else
+          {
+              if (soundIsPlaying)
+              {
+                  fireExtinguishingAudio.Stop();
+                  soundIsPlaying = false;
+              }
+
+              currentWaterParticles.Stop();
+          }
         }
-        else
-        {
-            if (soundIsPlaying)
-            {
-                fireExtinguishingAudio.Stop();
-                soundIsPlaying = false;
-            }
-
-            currentWaterParticles.Stop();
-        }
-
         // ifthe right trigger is pressed, instantiate the fire particles at the hand position
         if (OVRInput.GetDown(OVRInput.Button.SecondaryThumbstick))
         {
@@ -277,17 +280,7 @@ public class ExtinguishFire : MonoBehaviour
                     {
                         fireParticles.Stop();
 
-                        // play the ai finished audio when the fire is extinguished
-                        aiNarrationAudio.PlayOneShot(aiNarrationFinished);
-
-
-                        // var playerData = new Dictionary<string, object>{
-                        //     {"fireExtinguished", true},
-                        //     {"timeTaken", timeSinceFireStart},
-                        //     {"waterUsed", amtWaterUsed},
-                        // };
-
-                        // cloudSaveDataManager.SaveDataToCLoud(playerData);
+                        finishAINarration();
 
                         scoreManager.getFinalScore(currentPlayerName, true, timeToExtinguish, amtWaterUsed, timeSinceFireStart);
                         // shw this device id on the screen
@@ -298,7 +291,7 @@ public class ExtinguishFire : MonoBehaviour
                 }
                 else
                 {
-                    timeToExtinguish = 300;
+                    timeToExtinguish = 600;
                     Debug.Log("Time to extinguish: " + timeToExtinguish);
                 }
             }
@@ -312,6 +305,9 @@ public class ExtinguishFire : MonoBehaviour
 
     private IEnumerator PlayAINarration()
     {
+        // wait 5 seconds before starting the ai narration (so headset can be put on)
+        yield return new WaitForSeconds(8);
+
         // Play the first audio clip
         aiNarrationAudio.PlayOneShot(aiNarrationWelcome1);
         yield return new WaitWhile(() => aiNarrationAudio.isPlaying);
@@ -323,6 +319,14 @@ public class ExtinguishFire : MonoBehaviour
         // Play the third audio clip
         aiNarrationAudio.PlayOneShot(aiNarrationWelcome3);
         yield return new WaitWhile(() => aiNarrationAudio.isPlaying);
+
+        // now allow the hand controls to be unlocked so fire can be extinguished
+        handControlsLocked = false;
+    }
+
+    public void finishAINarration()
+    {
+        endAINarrationAudio.Play();
     }
 
     private async void StartServer()

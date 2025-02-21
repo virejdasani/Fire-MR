@@ -5169,7 +5169,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: f9e7159c49fae4646a1d1761d230ab6d, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.674
+  m_Volume: 0.058
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -12143,6 +12143,134 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!1 &1319832577
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1319832579}
+  - component: {fileID: 1319832578}
+  m_Layer: 0
+  m_Name: AI Narration Finished Audio Source
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!82 &1319832578
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1319832577}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: d62338ca3219fe64e8a4afb59edbb738, type: 3}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!4 &1319832579
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1319832577}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.033223424, y: -0.30722314, z: -0.32409284}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1319901738
 GameObject:
   m_ObjectHideFlags: 0
@@ -15507,10 +15635,10 @@ MonoBehaviour:
   fireAlarm: {fileID: 7460259626325378119, guid: 5c580e532b70ca1478cf44e96bba4e86, type: 3}
   timeToExtinguish: 400
   aiNarrationAudio: {fileID: 561288437}
+  endAINarrationAudio: {fileID: 1319832578}
   aiNarrationWelcome1: {fileID: 8300000, guid: e6e0b0140ae2bfd42ab74d148299200d, type: 3}
   aiNarrationWelcome2: {fileID: 8300000, guid: 3aa9206c822fae140adbc6260ada95f6, type: 3}
   aiNarrationWelcome3: {fileID: 8300000, guid: a3051e416d86c2c40b95ace8f5661907, type: 3}
-  aiNarrationFinished: {fileID: 8300000, guid: d62338ca3219fe64e8a4afb59edbb738, type: 3}
   fireExtinguishingAudio: {fileID: 639024570}
   serverConfigStatusText: {fileID: 1346498257}
   handTrackedMode: 1
@@ -15519,6 +15647,7 @@ MonoBehaviour:
   palmCenterCollider: {fileID: 402229881}
   middleFingerCollider: {fileID: 992730264}
   distanceBetweenFingerAndPalm: 0
+  handControlsLocked: 1
 --- !u!114 &1605786542
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20773,6 +20902,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: VirejCustomFire
       objectReference: {fileID: 0}
+    - target: {fileID: 1829688364293637228, guid: 62dd5a56a3cab7142b73eaeda11aa941, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4153462759521933594, guid: 62dd5a56a3cab7142b73eaeda11aa941, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.6
@@ -20986,6 +21119,7 @@ SceneRoots:
   - {fileID: 1386776234}
   - {fileID: 1849813884}
   - {fileID: 561288438}
+  - {fileID: 1319832579}
   - {fileID: 639024571}
   - {fileID: 594438685}
   - {fileID: 1020537151}
