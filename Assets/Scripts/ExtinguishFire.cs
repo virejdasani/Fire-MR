@@ -18,7 +18,7 @@ public class ExtinguishFire : MonoBehaviour
     CloudSaveDataManager cloudSaveDataManager;
     ScoreManager scoreManager;
 
-
+    public GameObject trainerPanelUI;
     public GameObject firePrefab;
 
     public ParticleSystem controllerWaterParticles;
@@ -229,7 +229,7 @@ public class ExtinguishFire : MonoBehaviour
             fireParticles = spawnedFire.transform.GetChild(0).GetComponent<ParticleSystem>();
         }
 
-        // if the a button is pressed, add a fire alarm game object to the position of the hand
+        // if the b button is pressed, add a fire alarm game object to the position of the hand
         if (OVRInput.GetDown(OVRInput.Button.Two))
         {
             Vector3 spawnPos = transform.position;
@@ -244,6 +244,9 @@ public class ExtinguishFire : MonoBehaviour
         if (OVRInput.GetDown(OVRInput.Button.PrimaryThumbstick) || Input.GetKeyDown(KeyCode.D))
         {
             Debug.Log("Playing AI Narration");
+            
+            // make the trainer panel ui disappear
+            trainerPanelUI.SetActive(false);
             
             StartAINarration();
         }
