@@ -43,7 +43,7 @@ public class ScoreManager : MonoBehaviour
         // int timeTakenToDiscoverFire
     )
     {
-        int score = timeToExtinguishFire + waterUsed + timeSinceFireStart;
+        int score = timeSinceFireStart - waterUsed - timeToExtinguishFire;
 
         // time to extinguish fire goes negative - this is the amount of wasted extinguisher liquid
         serverConfigStatusText.text += "Time to extinguish fire: " + timeToExtinguishFire + "\n";

@@ -285,7 +285,7 @@ public class ExtinguishFire : MonoBehaviour
 
                         finishAINarration();
 
-                        scoreManager.getFinalScore(currentPlayerName, true, timeToExtinguish, amtWaterUsed, timeSinceFireStart);
+                        scoreManager.getFinalScore(currentPlayerName, true, 600 + timeToExtinguish, amtWaterUsed, timeSinceFireStart);
                         // shw this device id on the screen
                         serverConfigStatusText.text += "\nDevice ID: " + SystemInfo.deviceUniqueIdentifier;
                         
@@ -319,12 +319,12 @@ public class ExtinguishFire : MonoBehaviour
         aiNarrationAudio.PlayOneShot(aiNarrationWelcome2);
         yield return new WaitWhile(() => aiNarrationAudio.isPlaying);
 
+        // now allow the hand controls to be unlocked so fire can be extinguished
+        handControlsLocked = false;
+
         // Play the third audio clip
         aiNarrationAudio.PlayOneShot(aiNarrationWelcome3);
         yield return new WaitWhile(() => aiNarrationAudio.isPlaying);
-
-        // now allow the hand controls to be unlocked so fire can be extinguished
-        handControlsLocked = false;
     }
 
     public void finishAINarration()
